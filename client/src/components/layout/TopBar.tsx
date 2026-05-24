@@ -16,21 +16,21 @@ export function TopBar() {
         
         {pathname !== '/' && (
           <Link href="/" className="icon-btn back-btn" style={{ marginRight: '-8px' }}>
-            <ArrowLeft size={18} strokeWidth={2.5} />
+            <ArrowLeft size={16} strokeWidth={1.5} />
           </Link>
         )}
         
         <div className="breadcrumb">
           <div className="breadcrumb-icon">
-            <LayoutGrid size={16} strokeWidth={2.5} />
+            <LayoutGrid size={16} strokeWidth={1.5} />
           </div>
-          <span className="breadcrumb-text" style={{ fontSize: '0.9rem', color: '#6B6B7B' }}>Assignment</span>
+          <span className="breadcrumb-text" style={{ fontSize: '0.85rem', color: '#71717A', fontWeight: 400 }}>Assignment</span>
         </div>
       </div>
 
       <div className="topbar-right">
         <button className="icon-btn notification-btn">
-          <Bell size={18} />
+          <Bell size={18} strokeWidth={1.5} />
           <span className="notification-dot"></span>
         </button>
 
@@ -39,7 +39,7 @@ export function TopBar() {
             <img src="https://ui-avatars.com/api/?name=JD&background=F3F4F6&color=1A1A1A" alt="John Doe" />
           </div>
           <span className="user-name">John Doe</span>
-          <ChevronDown size={16} className="dropdown-icon" />
+          <ChevronDown size={14} strokeWidth={1.5} className="dropdown-icon" />
         </div>
       </div>
 
@@ -47,9 +47,9 @@ export function TopBar() {
         .topbar {
           height: var(--topbar-h);
           background-color: var(--bg-topbar);
-          border-radius: 16px;
+          border-radius: 12px;
           margin: 12px 12px 0 0;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
           display: flex;
           align-items: center;
           justify-content: space-between;
@@ -130,19 +130,19 @@ export function TopBar() {
         }
 
         .user-menu:hover {
-          background-color: var(--bg-hover);
+          background-color: #F8F8FA;
         }
 
         .user-avatar-small img {
-          width: 28px;
-          height: 28px;
+          width: 24px;
+          height: 24px;
           border-radius: 50%;
           object-fit: cover;
         }
 
         .user-name {
           font-weight: 500;
-          font-size: 0.9rem;
+          font-size: 0.85rem;
           color: var(--text-primary);
         }
 

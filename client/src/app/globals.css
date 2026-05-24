@@ -40,8 +40,8 @@
   --shadow-dropdown: 0 4px 16px rgba(0, 0, 0, 0.12);
 
   /* ── Layout & Spacing ── */
-  --sidebar-w: 328px;
-  --topbar-h: 72px;
+  --sidebar-w: 280px;
+  --topbar-h: 60px;
   
   --radius-sm: 6px;
   --radius-md: 8px;

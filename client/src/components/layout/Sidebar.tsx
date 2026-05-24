@@ -89,7 +89,7 @@ export function Sidebar() {
 
       <style jsx>{`
         .sidebar {
-          width: 304px;
+          width: 256px;
           height: calc(100vh - 24px);
           margin: 12px;
           background-color: var(--bg-white);
@@ -99,7 +99,7 @@ export function Sidebar() {
           display: flex;
           flex-direction: column;
           border-radius: 16px;
-          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
           z-index: 50;
         }
 
@@ -110,9 +110,9 @@ export function Sidebar() {
         .logo {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          font-weight: 700;
-          font-size: 1.25rem;
+          gap: 0.6rem;
+          font-weight: 600;
+          font-size: 1.1rem;
           color: var(--brand-dark);
         }
 
@@ -145,23 +145,23 @@ export function Sidebar() {
         .btn-create {
           width: 100%;
           border-radius: var(--radius-full);
-          padding: 0.75rem;
-          font-weight: 500;
-          font-size: 0.95rem;
-          background-color: #2F2F32;
+          padding: 0.6rem;
+          font-weight: 400;
+          font-size: 0.85rem;
+          background-color: #18181B;
           color: white;
-          border: 1px solid var(--brand-accent);
-          box-shadow: inset 0 0 0 1px rgba(232, 93, 58, 0.5), 0 4px 12px rgba(232, 93, 58, 0.15);
+          border: 1px solid rgba(232, 93, 58, 0.5);
+          box-shadow: 0 4px 12px rgba(232, 93, 58, 0.1);
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.5rem;
+          gap: 0.4rem;
           transition: transform 0.2s, box-shadow 0.2s;
         }
         
         .btn-create:hover {
           transform: translateY(-1px);
-          box-shadow: inset 0 0 0 1px rgba(232, 93, 58, 0.8), 0 6px 16px rgba(232, 93, 58, 0.25);
+          box-shadow: 0 6px 16px rgba(232, 93, 58, 0.2);
         }
 
         .sidebar-nav {
@@ -174,11 +174,11 @@ export function Sidebar() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0.75rem 1rem;
+          padding: 0.6rem 0.85rem;
           border-radius: var(--radius-md);
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-          font-weight: 500;
+          color: #71717A;
+          font-size: 0.875rem;
+          font-weight: 400;
           transition: all 0.2s;
         }
 
@@ -188,15 +188,15 @@ export function Sidebar() {
         }
 
         .nav-item.active {
-          background-color: #F5F5F7;
+          background-color: #F8F8FA;
           color: var(--text-primary);
-          font-weight: 600;
+          font-weight: 500;
         }
 
         .nav-item-content {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
+          gap: 0.6rem;
         }
 
         .nav-icon {
@@ -248,8 +248,8 @@ export function Sidebar() {
         }
 
         .user-name {
-          font-size: 0.875rem;
-          font-weight: 600;
+          font-size: 0.8rem;
+          font-weight: 500;
           color: var(--text-primary);
           white-space: nowrap;
           overflow: hidden;

@@ -213,36 +213,38 @@ export default function Dashboard() {
         }
 
         .empty-title {
-          font-size: 1.25rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
+          font-size: 1.15rem;
+          font-weight: 600;
+          margin-bottom: 0.75rem;
+          color: #18181B;
         }
 
         .empty-subtitle {
-          color: #9CA3AF;
-          font-size: 0.9rem;
+          color: #8D8D99;
+          font-size: 0.85rem;
           line-height: 1.6;
           margin-bottom: 2rem;
           font-weight: 400;
         }
 
         .empty-action {
-          background-color: #1A1A1A;
+          background-color: #18181B;
           color: white;
           border-radius: var(--radius-full);
-          padding: 0.75rem 1.5rem;
-          font-weight: 500;
-          font-size: 0.95rem;
+          padding: 0.6rem 1.25rem;
+          font-weight: 400;
+          font-size: 0.85rem;
           border: none;
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 0.4rem;
           cursor: pointer;
-          transition: background-color 0.2s;
+          transition: background-color 0.2s, transform 0.2s;
         }
         
         .empty-action:hover {
-          background-color: #2D2D2D;
+          background-color: #27272A;
+          transform: translateY(-1px);
         }
 
         .loading-state {
