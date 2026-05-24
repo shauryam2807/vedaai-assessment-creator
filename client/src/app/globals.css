@@ -79,8 +79,6 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── App Layout (Figma Match) ── */
 .app-layout {
-  display: grid;
-  grid-template-columns: var(--sidebar-w) 1fr;
   min-height: 100vh;
 }
 
@@ -88,6 +86,7 @@ h1, h2, h3, h4, h5, h6 {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin-left: var(--sidebar-w);
 }
 
 .app-content {
@@ -421,8 +420,8 @@ h1, h2, h3, h4, h5, h6 {
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .app-layout {
-    grid-template-columns: 1fr;
+  .app-main {
+    margin-left: 0;
   }
   
   .sidebar {
