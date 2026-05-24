@@ -116,7 +116,7 @@ export function Sidebar() {
         }
 
         .logo-icon-bg {
-          background-color: var(--brand-accent);
+          background: linear-gradient(135deg, var(--brand-accent), #B83A20);
           width: 32px;
           height: 32px;
           border-radius: 8px;
@@ -145,8 +145,22 @@ export function Sidebar() {
           width: 100%;
           border-radius: var(--radius-full);
           padding: 0.75rem;
-          font-weight: 600;
+          font-weight: 500;
           font-size: 0.95rem;
+          background-color: #2F2F32;
+          color: white;
+          border: 1px solid var(--brand-accent);
+          box-shadow: inset 0 0 0 1px rgba(232, 93, 58, 0.5), 0 4px 12px rgba(232, 93, 58, 0.15);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.5rem;
+          transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-create:hover {
+          transform: translateY(-1px);
+          box-shadow: inset 0 0 0 1px rgba(232, 93, 58, 0.8), 0 6px 16px rgba(232, 93, 58, 0.25);
         }
 
         .sidebar-nav {
@@ -176,19 +190,6 @@ export function Sidebar() {
           background-color: var(--bg-hover);
           color: var(--text-primary);
           font-weight: 600;
-          position: relative;
-        }
-        
-        .nav-item.active::before {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 50%;
-          transform: translateY(-50%);
-          height: 60%;
-          width: 3px;
-          background-color: var(--text-primary);
-          border-radius: 0 4px 4px 0;
         }
 
         .nav-item-content {
@@ -209,8 +210,8 @@ export function Sidebar() {
           background-color: var(--brand-accent);
           color: white;
           font-size: 0.75rem;
-          font-weight: 700;
-          padding: 0.1rem 0.5rem;
+          font-weight: 600;
+          padding: 0.15rem 0.6rem;
           border-radius: var(--radius-full);
         }
 
@@ -227,7 +228,7 @@ export function Sidebar() {
           align-items: center;
           gap: 0.75rem;
           padding: 0.75rem 0.5rem;
-          background-color: var(--bg-body);
+          background-color: #F5F5F7;
           border-radius: var(--radius-lg);
           margin-top: 0.5rem;
         }
