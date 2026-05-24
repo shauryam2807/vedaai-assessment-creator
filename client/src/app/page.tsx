@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, Filter, Plus, FileQuestion, Sparkles } from "lucide-react";
 import { AssignmentCard } from "@/components/ui/AssignmentCard";
+import { EmptyStateIllustration } from "@/components/ui/EmptyStateIllustration";
 import { useAssignmentStore } from "@/store/useAssignmentStore";
 import toast from "react-hot-toast";
 
@@ -83,14 +84,7 @@ export default function Dashboard() {
         </div>
       ) : assignments.length === 0 ? (
         <div className="empty-state">
-          <div className="empty-illustration">
-            <div className="illustration-circle">
-              <FileQuestion size={48} color="var(--text-muted)" />
-              <div className="illustration-badge">
-                <Sparkles size={16} color="white" />
-              </div>
-            </div>
-          </div>
+          <EmptyStateIllustration />
           <h2 className="empty-title">No assignments yet</h2>
           <p className="empty-subtitle">
             Create your first assignment to start collecting and grading student submissions. 
@@ -212,41 +206,9 @@ export default function Dashboard() {
           align-items: center;
           justify-content: center;
           text-align: center;
-          padding: 4rem 2rem;
-          background: var(--bg-white);
-          border: 1px dashed var(--border-dashed);
-          border-radius: var(--radius-lg);
+          padding: 2rem;
           margin-top: 1rem;
           flex: 1;
-        }
-
-        .empty-illustration {
-          margin-bottom: 2rem;
-        }
-
-        .illustration-circle {
-          width: 100px;
-          height: 100px;
-          background-color: var(--bg-hover);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          position: relative;
-        }
-
-        .illustration-badge {
-          position: absolute;
-          bottom: 0;
-          right: 0;
-          width: 32px;
-          height: 32px;
-          background-color: var(--error);
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border: 2px solid var(--bg-white);
         }
 
         .empty-title {
