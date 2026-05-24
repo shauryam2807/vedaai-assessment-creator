@@ -10,6 +10,7 @@ export const redis = new IORedis(env.REDIS_URL, {
   maxRetriesPerRequest: null, // Required by BullMQ
   enableReadyCheck: false,
   lazyConnect: true,
+  tls: env.REDIS_URL.startsWith('rediss://') ? {} : undefined,
   retryStrategy: (times) => {
     // Retry a few times, then give up to avoid crashing without redis
     if (times > 5) return null;
@@ -40,10 +41,17 @@ redis.connect().catch((err) => {
  * sharing a single IORedis instance.
  */
 export function getRedisConnectionOptions() {
+  const url = new URL(env.REDIS_URL);
+  const isTLS = env.REDIS_URL.startsWith('rediss://');
+
   return {
     connection: {
-      host: new URL(env.REDIS_URL).hostname || 'localhost',
-      port: parseInt(new URL(env.REDIS_URL).port || '6379', 10),
+      host: url.hostname || 'localhost',
+      port: parseInt(url.port || '6379', 10),
+      password: url.password || undefined,
+      username: url.username || 'default',
+      tls: isTLS ? {} : undefined,
+      maxRetriesPerRequest: null,
     },
   };
 }
