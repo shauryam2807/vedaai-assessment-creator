@@ -59,13 +59,15 @@ export function TopBar() {
         .topbar {
           height: var(--topbar-h);
           background-color: var(--bg-topbar);
-          border-bottom: 1px solid var(--border-light);
+          border-radius: 16px;
+          margin: 12px 12px 0 0;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
           display: flex;
           align-items: center;
           justify-content: space-between;
           padding: 0 2rem;
           position: sticky;
-          top: 0;
+          top: 12px;
           z-index: 40;
         }
 

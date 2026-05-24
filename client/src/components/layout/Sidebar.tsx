@@ -90,20 +90,22 @@ export function Sidebar() {
 
       <style jsx>{`
         .sidebar {
-          width: var(--sidebar-w);
-          height: 100vh;
-          background-color: var(--bg-sidebar);
+          width: 304px;
+          height: calc(100vh - 24px);
+          margin: 12px;
+          background-color: var(--bg-white);
           position: fixed;
           top: 0;
           left: 0;
           display: flex;
           flex-direction: column;
-          border-right: 1px solid var(--border-light);
+          border-radius: 16px;
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
           z-index: 50;
         }
 
         .sidebar-header {
-          padding: 1.5rem;
+          padding: 1.5rem 1.5rem 0.5rem 1.5rem;
         }
 
         .logo {
@@ -134,11 +136,11 @@ export function Sidebar() {
           display: flex;
           flex-direction: column;
           gap: 1.5rem;
-          padding: 0 1rem;
+          padding: 1rem 1.5rem;
         }
 
         .sidebar-action {
-          padding: 0 0.5rem;
+          padding: 0;
         }
 
         .btn-create {
