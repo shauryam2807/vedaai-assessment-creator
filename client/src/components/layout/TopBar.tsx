@@ -1,19 +1,11 @@
 "use client";
 
-import { ArrowLeft, Bell, ChevronDown, Menu } from "lucide-react";
+import { ArrowLeft, Bell, ChevronDown, Menu, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function TopBar() {
   const pathname = usePathname();
-  
-  // Get breadcrumb based on route
-  const getBreadcrumb = () => {
-    if (pathname === '/') return "Assignments";
-    if (pathname === '/create') return "Create Assignment";
-    if (pathname.startsWith('/assessment')) return "Assignment View";
-    return "Dashboard";
-  };
 
   return (
     <header className="topbar hide-on-print">
@@ -23,20 +15,16 @@ export function TopBar() {
         </button>
         
         {pathname !== '/' && (
-          <Link href="/" className="icon-btn back-btn">
-            <ArrowLeft size={18} />
+          <Link href="/" className="icon-btn back-btn" style={{ marginRight: '-8px' }}>
+            <ArrowLeft size={18} strokeWidth={2.5} />
           </Link>
         )}
         
         <div className="breadcrumb">
           <div className="breadcrumb-icon">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-              <line x1="3" y1="9" x2="21" y2="9"></line>
-              <line x1="9" y1="21" x2="9" y2="9"></line>
-            </svg>
+            <LayoutGrid size={16} strokeWidth={2.5} />
           </div>
-          <span className="breadcrumb-text">{getBreadcrumb()}</span>
+          <span className="breadcrumb-text" style={{ fontSize: '0.9rem', color: '#6B6B7B' }}>Assignment</span>
         </div>
       </div>
 

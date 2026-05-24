@@ -19,9 +19,9 @@ export function Sidebar() {
   const navItems = [
     { href: "/", label: "Home", icon: LayoutGrid },
     { href: "#", label: "My Groups", icon: Users },
-    { href: "/", label: "Assignments", icon: FileText, badge: 10, isActive: pathname === "/" || pathname === "/create" || pathname.startsWith("/assessment") },
+    { href: "/", label: "Assignments", icon: FileText, isActive: true },
     { href: "#", label: "AI Teacher's Toolkit", icon: Box },
-    { href: "#", label: "My Library", icon: Clock, badge: 32 },
+    { href: "#", label: "My Library", icon: Clock },
   ];
 
   return (
@@ -29,7 +29,9 @@ export function Sidebar() {
       <div className="sidebar-header">
         <Link href="/" className="logo">
           <div className="logo-icon-bg">
-            <Shield size={18} color="white" />
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4H9L12 14L15 4H20L12 20L4 4Z" fill="white" />
+            </svg>
           </div>
           <span className="logo-text">VedaAI</span>
         </Link>
@@ -60,9 +62,6 @@ export function Sidebar() {
                   <Icon size={18} className="nav-icon" />
                   <span>{item.label}</span>
                 </div>
-                {item.badge && (
-                  <span className="nav-badge">{item.badge}</span>
-                )}
               </Link>
             );
           })}
@@ -189,7 +188,7 @@ export function Sidebar() {
         }
 
         .nav-item.active {
-          background-color: var(--bg-hover);
+          background-color: #F5F5F7;
           color: var(--text-primary);
           font-weight: 600;
         }

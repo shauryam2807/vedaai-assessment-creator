@@ -87,12 +87,13 @@ export default function Dashboard() {
           <EmptyStateIllustration />
           <h2 className="empty-title">No assignments yet</h2>
           <p className="empty-subtitle">
-            Create your first assignment to start collecting and grading student submissions. 
-            You can set up rubrics, define marking criteria, and let AI assist with grading.
+            Create your first assignment to start collecting and grading student<br/>
+            submissions. You can set up rubrics, define marking criteria, and let AI<br/>
+            assist with grading.
           </p>
-          <Link href="/create">
-            <button className="btn btn-primary btn-lg empty-action">
-              <Plus size={20} />
+          <Link href="/create" style={{ textDecoration: 'none' }}>
+            <button className="btn empty-action">
+              <Plus size={18} strokeWidth={2.5} />
               Create Your First Assignment
             </button>
           </Link>
@@ -218,16 +219,30 @@ export default function Dashboard() {
         }
 
         .empty-subtitle {
-          color: var(--text-secondary);
-          max-width: 500px;
-          line-height: 1.5;
+          color: #9CA3AF;
+          font-size: 0.9rem;
+          line-height: 1.6;
           margin-bottom: 2rem;
-          font-size: 0.95rem;
+          font-weight: 400;
         }
 
         .empty-action {
+          background-color: #1A1A1A;
+          color: white;
           border-radius: var(--radius-full);
           padding: 0.75rem 1.5rem;
+          font-weight: 500;
+          font-size: 0.95rem;
+          border: none;
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          cursor: pointer;
+          transition: background-color 0.2s;
+        }
+        
+        .empty-action:hover {
+          background-color: #2D2D2D;
         }
 
         .loading-state {
