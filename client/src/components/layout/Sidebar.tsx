@@ -2,266 +2,280 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { 
-  LayoutGrid, 
-  Users, 
-  FileText, 
-  Box, 
-  Clock, 
-  Settings,
-  Sparkles,
-  Shield
-} from "lucide-react";
+import { useAssignmentStore } from "@/store/useAssignmentStore";
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { assignments } = useAssignmentStore();
 
   const navItems = [
-    { href: "/", label: "Home", icon: LayoutGrid },
-    { href: "#", label: "My Groups", icon: Users },
-    { href: "/", label: "Assignments", icon: FileText, isActive: true },
-    { href: "#", label: "AI Teacher's Toolkit", icon: Box },
-    { href: "#", label: "My Library", icon: Clock },
+    { href: "/", label: "Home", icon: "home", isActive: false },
+    { href: "#", label: "My Groups", icon: "groups", isActive: false },
+    { href: "/", label: "Assignments", icon: "assignments", isActive: true, showBadge: true },
+    { href: "#", label: "AI Teacher's Toolkit", icon: "ai-toolkit", isActive: false },
+    { href: "#", label: "My Library", icon: "library", isActive: false },
   ];
+
+  const navIcons: Record<string, React.ReactNode> = {
+    home: (
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+        <rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/>
+      </svg>
+    ),
+    groups: (
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" width="18" height="18">
+        <circle cx="7" cy="6" r="3"/><circle cx="13" cy="7" r="2.2"/>
+        <path d="M1 15c0-3 2.7-5 6-5s6 2 6 5"/><path d="M13 10c1.8.3 4 1.4 4 4"/>
+      </svg>
+    ),
+    assignments: (
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+        <rect x="3" y="2" width="12" height="14" rx="2"/>
+        <path d="M6 6h6M6 9h6M6 12h4"/>
+      </svg>
+    ),
+    "ai-toolkit": (
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" width="18" height="18">
+        <rect x="2" y="3" width="14" height="10" rx="2"/>
+        <path d="M6 16h6M9 13v3"/>
+        <path d="M6 7.5 L9 10 L12 7.5" strokeWidth="1.5"/>
+      </svg>
+    ),
+    library: (
+      <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" width="18" height="18">
+        <path d="M4 2h7l3 3v11a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/>
+        <path d="M11 2v4h4M6 9h6M6 12h4"/>
+      </svg>
+    ),
+  };
 
   return (
     <aside className="sidebar hide-on-print">
-      <div className="sidebar-header">
-        <Link href="/" className="logo">
-          <div className="logo-icon-bg">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 4H9L12 14L15 4H20L12 20L4 4Z" fill="white" />
-            </svg>
-          </div>
-          <span className="logo-text">VedaAI</span>
-        </Link>
-      </div>
-
-      <div className="sidebar-content">
-        <div className="sidebar-action">
-          <Link href="/create" style={{ textDecoration: 'none' }}>
-            <button className="btn btn-primary btn-create">
-              <Sparkles size={16} />
-              Create Assignment
-            </button>
-          </Link>
+      {/* Logo */}
+      <div className="sidebar-logo">
+        <div className="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M4 15 L10 4 L16 15" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M7 11 L13 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+          </svg>
         </div>
-
-        <nav className="sidebar-nav">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = item.isActive || pathname === item.href;
-            
-            return (
-              <Link 
-                key={item.label} 
-                href={item.href} 
-                className={`nav-item ${active ? "active" : ""}`}
-              >
-                <div className="nav-item-content">
-                  <Icon size={18} className="nav-icon" />
-                  <span>{item.label}</span>
-                </div>
-              </Link>
-            );
-          })}
-        </nav>
+        <span className="logo-text">VedaAI</span>
       </div>
 
+      {/* Create Button */}
+      <Link href="/create" style={{ textDecoration: 'none' }}>
+        <button className="sidebar-create-btn">
+          <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
+          </svg>
+          Create Assignment
+        </button>
+      </Link>
+
+      {/* Navigation */}
+      <nav className="nav-list">
+        {navItems.map((item) => {
+          const active = item.isActive || pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`nav-item ${active ? "active" : ""}`}
+            >
+              {navIcons[item.icon]}
+              <span>{item.label}</span>
+              {item.showBadge && (
+                <span className="nav-badge">{assignments.length || 0}</span>
+              )}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Footer */}
       <div className="sidebar-footer">
-        <Link href="#" className="nav-item">
-          <div className="nav-item-content">
-            <Settings size={18} className="nav-icon" />
-            <span>Settings</span>
-          </div>
-        </Link>
-        
-        <div className="user-profile">
-          <div className="user-avatar">
-            <img src="https://ui-avatars.com/api/?name=DPS&background=F3F4F6&color=1A1A1A" alt="DPS" />
-          </div>
-          <div className="user-info">
-            <div className="user-name">Delhi Public School</div>
-            <div className="user-school">Bokaro Steel City</div>
+        <div className="settings-nav">
+          <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" width="18" height="18">
+            <circle cx="9" cy="9" r="2.5"/>
+            <path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.2 3.2l1.4 1.4M13.4 13.4l1.4 1.4M3.2 14.8l1.4-1.4M13.4 4.6l1.4-1.4"/>
+          </svg>
+          Settings
+        </div>
+        <div className="school-card">
+          <div className="school-avatar-wrap">🏫</div>
+          <div className="school-info">
+            <div className="school-name">Delhi Public School</div>
+            <div className="school-city">Bokaro Steel City</div>
           </div>
         </div>
       </div>
 
       <style jsx>{`
         .sidebar {
-          width: 256px;
-          height: calc(100vh - 24px);
-          margin: 12px;
-          background-color: var(--bg-white);
-          position: fixed;
-          top: 0;
-          left: 0;
+          width: var(--sidebar-w);
+          min-width: var(--sidebar-w);
+          background: var(--bg-white);
+          height: 100vh;
           display: flex;
           flex-direction: column;
-          border-radius: 16px;
-          box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
-          z-index: 50;
+          padding: 20px 14px 18px;
+          border-right: 1px solid var(--border-light);
+          flex-shrink: 0;
         }
 
-        .sidebar-header {
-          padding: 1.5rem 1.5rem 0.5rem 1.5rem;
-        }
-
-        .logo {
+        .sidebar-logo {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          font-weight: 600;
-          font-size: 1.1rem;
-          color: var(--brand-dark);
+          gap: 9px;
+          padding: 6px 8px;
+          margin-bottom: 22px;
         }
 
-        .logo-icon-bg {
-          background: linear-gradient(135deg, var(--brand-accent), #B83A20);
-          width: 32px;
-          height: 32px;
+        .logo-icon {
+          width: 34px;
+          height: 34px;
           border-radius: 8px;
+          background: linear-gradient(145deg, #E84E1B 0%, #F97316 55%, #FBAE5C 100%);
           display: flex;
           align-items: center;
           justify-content: center;
+          flex-shrink: 0;
+          box-shadow: 0 2px 8px rgba(232,78,27,0.35);
         }
 
         .logo-text {
-          letter-spacing: -0.5px;
+          font-size: 18px;
+          font-weight: 800;
+          letter-spacing: -0.3px;
+          color: var(--text-primary);
         }
 
-        .sidebar-content {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          padding: 1rem 1.5rem;
-        }
-
-        .sidebar-action {
-          padding: 0;
-        }
-
-        .btn-create {
-          width: 100%;
-          border-radius: var(--radius-full);
-          padding: 0.6rem;
-          font-weight: 400;
-          font-size: 0.85rem;
-          background-color: #18181B;
-          color: white;
-          border: 1px solid rgba(232, 93, 58, 0.5);
-          box-shadow: 0 4px 12px rgba(232, 93, 58, 0.1);
+        .sidebar-create-btn {
           display: flex;
           align-items: center;
           justify-content: center;
-          gap: 0.4rem;
-          transition: transform 0.2s, box-shadow 0.2s;
+          gap: 7px;
+          background: var(--bg-dark-btn);
+          color: #fff;
+          border: none;
+          border-radius: var(--radius-full);
+          padding: 12px 20px;
+          font-size: 13.5px;
+          font-weight: 600;
+          width: 100%;
+          margin-bottom: 24px;
+          transition: opacity 0.18s, transform 0.18s;
+          cursor: pointer;
+          font-family: var(--font);
         }
-        
-        .btn-create:hover {
+        .sidebar-create-btn:hover {
+          opacity: 0.84;
           transform: translateY(-1px);
-          box-shadow: 0 6px 16px rgba(232, 93, 58, 0.2);
         }
 
-        .sidebar-nav {
+        .nav-list {
+          flex: 1;
           display: flex;
           flex-direction: column;
-          gap: 0.25rem;
         }
 
         .nav-item {
           display: flex;
           align-items: center;
-          justify-content: space-between;
-          padding: 0.6rem 0.85rem;
+          gap: 10px;
+          padding: 10px 12px;
           border-radius: var(--radius-md);
-          color: #71717A;
-          font-size: 0.875rem;
-          font-weight: 400;
-          transition: all 0.2s;
-        }
-
-        .nav-item:hover {
-          background-color: var(--bg-hover);
-          color: var(--text-primary);
-        }
-
-        .nav-item.active {
-          background-color: #F8F8FA;
-          color: var(--text-primary);
+          font-size: 14px;
           font-weight: 500;
+          color: var(--text-secondary);
+          cursor: pointer;
+          transition: background 0.14s, color 0.14s;
+          margin-bottom: 1px;
+          position: relative;
+          text-decoration: none;
         }
-
-        .nav-item-content {
-          display: flex;
-          align-items: center;
-          gap: 0.6rem;
+        .nav-item:hover {
+          background: var(--bg-hover);
+          color: var(--text-primary);
         }
-
-        .nav-icon {
-          opacity: 0.8;
-        }
-
-        .nav-item.active .nav-icon {
-          opacity: 1;
+        .nav-item.active {
+          background: var(--bg-active);
+          color: var(--text-primary);
+          font-weight: 600;
         }
 
         .nav-badge {
-          background-color: var(--brand-accent);
+          margin-left: auto;
+          background: var(--orange);
           color: white;
-          font-size: 0.75rem;
-          font-weight: 600;
-          padding: 0.15rem 0.6rem;
-          border-radius: var(--radius-full);
+          font-size: 11px;
+          font-weight: 700;
+          border-radius: 20px;
+          padding: 2px 7px;
+          min-width: 20px;
+          text-align: center;
         }
 
         .sidebar-footer {
-          padding: 1rem;
           border-top: 1px solid var(--border-light);
-          display: flex;
-          flex-direction: column;
-          gap: 0.5rem;
+          padding-top: 14px;
         }
 
-        .user-profile {
+        .settings-nav {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
-          padding: 0.75rem 0.5rem;
-          background-color: #F5F5F7;
-          border-radius: var(--radius-lg);
-          margin-top: 0.5rem;
-        }
-
-        .user-avatar img {
-          width: 36px;
-          height: 36px;
-          border-radius: 50%;
-          object-fit: cover;
-        }
-
-        .user-info {
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
-        }
-
-        .user-name {
-          font-size: 0.8rem;
+          gap: 10px;
+          padding: 10px 12px;
+          border-radius: var(--radius-md);
+          font-size: 14px;
           font-weight: 500;
-          color: var(--text-primary);
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
+          color: var(--text-secondary);
+          cursor: pointer;
+          margin-bottom: 10px;
+          transition: background 0.14s;
+        }
+        .settings-nav:hover {
+          background: var(--bg-hover);
         }
 
-        .user-school {
-          font-size: 0.75rem;
-          color: var(--text-secondary);
-          white-space: nowrap;
+        .school-card {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 10px 12px;
+          border-radius: 10px;
+          background: var(--bg-active);
+          cursor: pointer;
+        }
+
+        .school-avatar-wrap {
+          width: 38px;
+          height: 38px;
+          border-radius: 50%;
           overflow: hidden;
-          text-overflow: ellipsis;
+          flex-shrink: 0;
+          background: #F3DEC0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 20px;
+        }
+
+        .school-info .school-name {
+          font-size: 13px;
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+        .school-info .school-city {
+          font-size: 12px;
+          color: var(--text-secondary);
+        }
+
+        @media (max-width: 768px) {
+          .sidebar {
+            display: none;
+          }
         }
       `}</style>
     </aside>

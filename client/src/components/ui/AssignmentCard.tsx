@@ -1,6 +1,5 @@
 "use client";
 
-import { MoreVertical, Trash2, Eye } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { IAssignment } from "@/types";
@@ -34,29 +33,39 @@ export function AssignmentCard({ assignment, onDelete }: AssignmentCardProps) {
     return `${day}-${month}-${year}`;
   };
 
-  const assignedDate = assignment.generatedPaperId ? formatShortDate(new Date()) : formatShortDate(new Date()); // Assuming creation date is now for mockup, ideally from DB
+  const assignedDate = assignment.generatedPaperId ? formatShortDate(new Date()) : formatShortDate(new Date());
   const dueDate = formatShortDate(assignment.dueDate);
 
   return (
-    <div className="assignment-card">
-      <div className="card-header">
-        <h3 className="card-title">{assignment.title}</h3>
+    <div className="asgn-card">
+      <div className="card-top">
+        <span className="card-title">{assignment.title}</span>
         <div className="menu-container" ref={menuRef}>
-          <button 
-            className="menu-trigger" 
-            onClick={() => setMenuOpen(!menuOpen)}
+          <button
+            className="card-three-dot"
+            onClick={(e) => {
+              e.stopPropagation();
+              setMenuOpen(!menuOpen);
+            }}
           >
-            <MoreVertical size={20} />
+            <svg width="4" height="16" viewBox="0 0 4 16" fill="currentColor">
+              <circle cx="2" cy="2" r="1.5"/>
+              <circle cx="2" cy="8" r="1.5"/>
+              <circle cx="2" cy="14" r="1.5"/>
+            </svg>
           </button>
-          
+
           {menuOpen && (
-            <div className="dropdown-menu">
-              <Link href={`/assessment/${assignment._id}`} className="dropdown-item">
-                <Eye size={16} />
+            <div className="ctx-menu">
+              <Link
+                href={`/assessment/${assignment._id}`}
+                className="ctx-item"
+                onClick={() => setMenuOpen(false)}
+              >
                 View Assignment
               </Link>
-              <button 
-                className="dropdown-item delete-item" 
+              <button
+                className="ctx-item danger"
                 onClick={() => {
                   if (confirm("Are you sure you want to delete this assignment?")) {
                     onDelete(assignment._id);
@@ -64,130 +73,127 @@ export function AssignmentCard({ assignment, onDelete }: AssignmentCardProps) {
                   setMenuOpen(false);
                 }}
               >
-                <Trash2 size={16} />
                 Delete
               </button>
             </div>
           )}
         </div>
       </div>
-      
-      <div className="card-footer">
-        <span className="date-info">Assigned on: {assignedDate}</span>
-        <span className="date-info">Due: {dueDate}</span>
+
+      <div className="card-bottom">
+        <div className="card-date">
+          <span className="date-label">Assigned on </span>
+          <span className="date-val">: {assignedDate}</span>
+        </div>
+        <div className="card-date">
+          <span className="date-label">Due </span>
+          <span className="date-val">: {dueDate}</span>
+        </div>
       </div>
 
       <style jsx>{`
-        .assignment-card {
-          background-color: var(--bg-white);
-          border: 1px solid var(--border-light);
+        .asgn-card {
+          background: var(--bg-white);
           border-radius: var(--radius-lg);
-          padding: 1.25rem 1.5rem;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-          box-shadow: var(--shadow-card);
-          transition: transform 0.2s, box-shadow 0.2s;
+          padding: 20px 22px 18px;
+          box-shadow: var(--shadow-sm);
+          position: relative;
+          transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .asgn-card:hover {
+          box-shadow: var(--shadow-md);
+          transform: translateY(-1px);
         }
 
-        .assignment-card:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-        }
-
-        .card-header {
+        .card-top {
           display: flex;
-          justify-content: space-between;
           align-items: flex-start;
+          justify-content: space-between;
+          margin-bottom: 28px;
         }
 
         .card-title {
-          font-size: 1.125rem;
+          font-size: 15.5px;
           font-weight: 700;
           color: var(--text-primary);
-          margin: 0;
-          padding-right: 1rem;
         }
 
         .menu-container {
           position: relative;
         }
 
-        .menu-trigger {
+        .card-three-dot {
           background: transparent;
           border: none;
-          color: var(--text-muted);
-          cursor: pointer;
+          padding: 3px 5px;
+          border-radius: 5px;
+          color: var(--text-secondary);
           display: flex;
           align-items: center;
-          justify-content: center;
-          width: 32px;
-          height: 32px;
-          border-radius: 50%;
-          transition: background-color 0.2s, color 0.2s;
+          transition: background 0.14s;
+          cursor: pointer;
+        }
+        .card-three-dot:hover {
+          background: var(--border-light);
         }
 
-        .menu-trigger:hover {
-          background-color: var(--bg-hover);
-          color: var(--text-primary);
-        }
-
-        .dropdown-menu {
+        .ctx-menu {
           position: absolute;
           top: 100%;
           right: 0;
-          background: var(--bg-white);
-          border: 1px solid var(--border-light);
-          border-radius: var(--radius-md);
+          background: white;
+          border-radius: 10px;
           box-shadow: var(--shadow-dropdown);
-          padding: 0.5rem;
           min-width: 160px;
-          z-index: 10;
-          display: flex;
-          flex-direction: column;
-          gap: 0.25rem;
+          z-index: 200;
+          overflow: hidden;
+          animation: menuPop 0.12s ease-out;
         }
 
-        .dropdown-item {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          padding: 0.5rem 0.75rem;
+        .ctx-item {
+          padding: 12px 16px;
+          font-size: 13px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: background 0.1s;
           border: none;
           background: transparent;
           width: 100%;
           text-align: left;
-          font-size: 0.875rem;
-          font-weight: 500;
+          font-family: var(--font);
           color: var(--text-primary);
-          cursor: pointer;
-          border-radius: 4px;
-          transition: background-color 0.2s;
+          display: block;
           text-decoration: none;
         }
-
-        .dropdown-item:hover {
-          background-color: var(--bg-hover);
+        .ctx-item:hover {
+          background: var(--bg-hover);
         }
-
-        .delete-item {
+        .ctx-item.danger {
           color: var(--error);
         }
-
-        .delete-item:hover {
-          background-color: #FEE2E2;
+        .ctx-item.danger:hover {
+          background: #FEE2E2;
         }
 
-        .card-footer {
+        .card-bottom {
           display: flex;
-          justify-content: space-between;
           align-items: center;
+          justify-content: space-between;
+          font-size: 12.5px;
         }
 
-        .date-info {
-          font-size: 0.875rem;
+        .date-label {
+          font-weight: 700;
+          color: var(--text-primary);
+        }
+
+        .date-val {
           color: var(--text-secondary);
-          font-weight: 500;
+        }
+
+        @keyframes menuPop {
+          from { opacity: 0; transform: scale(0.95) translateY(-4px); }
+          to   { opacity: 1; transform: scale(1)    translateY(0); }
         }
       `}</style>
     </div>

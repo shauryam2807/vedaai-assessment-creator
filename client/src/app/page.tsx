@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Search, Filter, Plus, FileQuestion, Sparkles } from "lucide-react";
 import { AssignmentCard } from "@/components/ui/AssignmentCard";
 import { EmptyStateIllustration } from "@/components/ui/EmptyStateIllustration";
 import { useAssignmentStore } from "@/store/useAssignmentStore";
@@ -15,7 +14,6 @@ export default function Dashboard() {
   useEffect(() => {
     fetchAssignments().catch(err => {
       console.error("Failed to fetch assignments:", err);
-      // We don't show toast here as it might be annoying on load if backend is down
     });
   }, [fetchAssignments]);
 
@@ -33,50 +31,8 @@ export default function Dashboard() {
     }
   };
 
-  // Mock data for display purposes if backend is completely empty and we want to see the UI
-  // I'll leave this empty for now and let the empty state show.
-
   return (
     <div className="dashboard-container">
-      <div className="dashboard-header">
-        <div>
-          <h1 className="page-title">
-            <span className="title-dot"></span>
-            Assignments
-          </h1>
-          <p className="page-subtitle">Manage and create assignments for your classes</p>
-        </div>
-        
-        <div className="header-actions">
-          <Link href="/create">
-            <button className="btn btn-primary hide-mobile">
-              <Plus size={18} />
-              Create Assignment
-            </button>
-          </Link>
-        </div>
-      </div>
-
-      <div className="dashboard-controls">
-        <button className="btn btn-outline filter-btn">
-          <Filter size={18} />
-          Filter By
-        </button>
-        
-        <form className="search-form" onSubmit={handleSearch}>
-          <div className="search-wrapper">
-            <Search size={18} className="search-icon" />
-            <input 
-              type="text" 
-              placeholder="Search Assignment" 
-              className="search-input"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-        </form>
-      </div>
-
       {isLoadingAssignments ? (
         <div className="loading-state">
           <div className="spinner"></div>
@@ -85,168 +41,252 @@ export default function Dashboard() {
       ) : assignments.length === 0 ? (
         <div className="empty-state">
           <EmptyStateIllustration />
-          <h2 className="empty-title">No assignments yet</h2>
-          <p className="empty-subtitle">
-            Create your first assignment to start collecting and grading student<br/>
-            submissions. You can set up rubrics, define marking criteria, and let AI<br/>
+          <p className="empty-title">No assignments yet</p>
+          <p className="empty-sub">
+            Create your first assignment to start collecting and grading student
+            submissions. You can set up rubrics, define marking criteria, and let AI
             assist with grading.
           </p>
           <Link href="/create" style={{ textDecoration: 'none' }}>
-            <button className="btn empty-action">
-              <Plus size={18} strokeWidth={2.5} />
+            <button className="create-first-btn">
+              <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
+              </svg>
               Create Your First Assignment
             </button>
           </Link>
         </div>
       ) : (
-        <div className="assignments-grid">
-          {assignments.map(assignment => (
-            <AssignmentCard 
-              key={assignment._id} 
-              assignment={assignment} 
-              onDelete={handleDelete}
-            />
-          ))}
-        </div>
+        <>
+          {/* List header */}
+          <div className="list-page-header">
+            <div className="page-title-row">
+              <span className="status-dot"></span>
+              <h1 className="page-title">Assignments</h1>
+            </div>
+            <p className="page-sub">Manage and create assignments for your classes.</p>
+          </div>
+
+          {/* Filter / Search row */}
+          <div className="filter-row">
+            <button className="filter-btn">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <path d="M1 3h12M3 7h8M5 11h4"/>
+              </svg>
+              Filter By
+            </button>
+            <form className="search-wrap" onSubmit={handleSearch}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round">
+                <circle cx="6" cy="6" r="4"/><line x1="10" y1="10" x2="13" y2="13"/>
+              </svg>
+              <input
+                type="text"
+                placeholder="Search Assignment"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </form>
+          </div>
+
+          {/* Cards grid */}
+          <div className="cards-grid">
+            {assignments.map(assignment => (
+              <AssignmentCard
+                key={assignment._id}
+                assignment={assignment}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+
+          {/* Floating create assignment button */}
+          <Link href="/create" style={{ textDecoration: 'none' }}>
+            <button className="floating-btn">
+              <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
+              </svg>
+              Create Assignment
+            </button>
+          </Link>
+        </>
       )}
 
       <style jsx>{`
         .dashboard-container {
           display: flex;
           flex-direction: column;
-          gap: 2rem;
           height: 100%;
+          animation: screenIn 0.18s ease;
         }
 
-        .dashboard-header {
-          display: flex;
-          justify-content: space-between;
-          align-items: flex-end;
+        @keyframes screenIn {
+          from { opacity: 0; transform: translateY(6px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
 
-        .page-title {
-          display: flex;
-          align-items: center;
-          gap: 0.75rem;
-          font-size: 1.5rem;
-          font-weight: 700;
-          margin-bottom: 0.25rem;
-        }
-
-        .title-dot {
-          width: 12px;
-          height: 12px;
-          background-color: var(--brand-green);
-          border-radius: 50%;
-          display: inline-block;
-        }
-
-        .page-subtitle {
-          color: var(--text-secondary);
-          font-size: 0.95rem;
-        }
-
-        .dashboard-controls {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .filter-btn {
-          border-radius: var(--radius-full);
-          padding: 0.5rem 1rem;
-          font-weight: 500;
-        }
-
-        .search-form {
-          flex: 1;
-          max-width: 400px;
-        }
-
-        .search-wrapper {
-          position: relative;
-          display: flex;
-          align-items: center;
-        }
-
-        .search-icon {
-          position: absolute;
-          left: 1rem;
-          color: var(--text-muted);
-        }
-
-        .search-input {
-          width: 100%;
-          background-color: var(--bg-white);
-          border: 1px solid var(--border-light);
-          border-radius: var(--radius-full);
-          padding: 0.6rem 1rem 0.6rem 2.5rem;
-          font-family: inherit;
-          font-size: 0.9rem;
-          color: var(--text-primary);
-          transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .search-input:focus {
-          outline: none;
-          border-color: var(--border-focus);
-          box-shadow: 0 0 0 1px var(--border-focus);
-        }
-
-        .assignments-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 1.5rem;
-        }
-
-        /* Empty State */
+        /* ── EMPTY STATE ── */
         .empty-state {
           display: flex;
-          flex-direction: column;
+          height: 100%;
           align-items: center;
           justify-content: center;
+          flex-direction: column;
           text-align: center;
-          padding: 2rem;
-          margin-top: 1rem;
-          flex: 1;
+          gap: 10px;
         }
 
         .empty-title {
-          font-size: 1.15rem;
-          font-weight: 600;
-          margin-bottom: 0.75rem;
-          color: #18181B;
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--text-primary);
         }
 
-        .empty-subtitle {
-          color: #8D8D99;
-          font-size: 0.85rem;
-          line-height: 1.6;
-          margin-bottom: 2rem;
-          font-weight: 400;
+        .empty-sub {
+          font-size: 13.5px;
+          color: var(--text-secondary);
+          max-width: 360px;
+          line-height: 1.65;
         }
 
-        .empty-action {
-          background-color: #18181B;
+        .create-first-btn {
+          margin-top: 14px;
+          display: inline-flex;
+          align-items: center;
+          gap: 7px;
+          background: var(--bg-dark-btn);
           color: white;
-          border-radius: var(--radius-full);
-          padding: 0.6rem 1.25rem;
-          font-weight: 400;
-          font-size: 0.85rem;
           border: none;
+          border-radius: var(--radius-full);
+          padding: 14px 28px;
+          font-size: 14px;
+          font-weight: 600;
+          transition: opacity 0.18s, transform 0.18s;
+          cursor: pointer;
+          font-family: var(--font);
+        }
+        .create-first-btn:hover {
+          opacity: 0.85;
+          transform: translateY(-2px);
+        }
+
+        /* ── LIST VIEW ── */
+        .list-page-header {
+          margin-bottom: 20px;
+        }
+
+        .page-title-row {
           display: flex;
           align-items: center;
-          gap: 0.4rem;
-          cursor: pointer;
-          transition: background-color 0.2s, transform 0.2s;
-        }
-        
-        .empty-action:hover {
-          background-color: #27272A;
-          transform: translateY(-1px);
+          gap: 9px;
+          margin-bottom: 3px;
         }
 
+        .status-dot {
+          width: 10px;
+          height: 10px;
+          background: var(--success);
+          border-radius: 50%;
+        }
+
+        .page-title {
+          font-size: 22px;
+          font-weight: 800;
+          letter-spacing: -0.3px;
+          margin: 0;
+        }
+
+        .page-sub {
+          font-size: 13px;
+          color: var(--text-secondary);
+        }
+
+        .filter-row {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 12px 0;
+          border-bottom: 1px solid var(--border-light);
+          margin-bottom: 22px;
+          gap: 12px;
+        }
+
+        .filter-btn {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          background: transparent;
+          border: none;
+          font-size: 13px;
+          font-weight: 500;
+          color: var(--text-secondary);
+          padding: 7px 12px;
+          border-radius: var(--radius-sm);
+          transition: background 0.14s;
+          cursor: pointer;
+          font-family: var(--font);
+        }
+        .filter-btn:hover {
+          background: var(--border-light);
+        }
+
+        .search-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          background: var(--bg-white);
+          border: 1px solid var(--border-light);
+          border-radius: 8px;
+          padding: 8px 12px;
+          width: 270px;
+        }
+        .search-wrap input {
+          border: none;
+          outline: none;
+          font-size: 13px;
+          color: var(--text-primary);
+          background: transparent;
+          width: 100%;
+          font-family: var(--font);
+        }
+        .search-wrap input::placeholder {
+          color: var(--text-muted);
+        }
+
+        .cards-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 14px;
+          padding-bottom: 80px;
+        }
+
+        /* ── FLOATING BUTTON ── */
+        .floating-btn {
+          position: fixed;
+          bottom: 30px;
+          left: calc(var(--sidebar-w) + 50%);
+          transform: translateX(-50%);
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          background: var(--bg-dark-btn);
+          color: white;
+          border: none;
+          border-radius: var(--radius-full);
+          padding: 13px 26px;
+          font-size: 14px;
+          font-weight: 600;
+          box-shadow: var(--shadow-lg);
+          transition: opacity 0.18s, transform 0.18s;
+          z-index: 50;
+          cursor: pointer;
+          font-family: var(--font);
+        }
+        .floating-btn:hover {
+          opacity: 0.88;
+          transform: translateX(-50%) translateY(-2px);
+        }
+
+        /* ── LOADING STATE ── */
         .loading-state {
           display: flex;
           flex-direction: column;
@@ -255,6 +295,7 @@ export default function Dashboard() {
           padding: 4rem;
           color: var(--text-secondary);
           gap: 1rem;
+          flex: 1;
         }
 
         .spinner {
@@ -270,28 +311,22 @@ export default function Dashboard() {
           to { transform: rotate(360deg); }
         }
 
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
-          .dashboard-header {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 1rem;
+          .cards-grid {
+            grid-template-columns: 1fr;
           }
-
-          .hide-mobile {
+          .search-wrap {
+            width: 100%;
+          }
+          .filter-row {
+            flex-wrap: wrap;
+          }
+          .floating-btn {
             display: none;
           }
-
-          .dashboard-controls {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          .search-form {
-            max-width: 100%;
-          }
-          
-          .assignments-grid {
-            grid-template-columns: 1fr;
+          .empty-state {
+            padding: 20px 20px 80px;
           }
         }
       `}</style>

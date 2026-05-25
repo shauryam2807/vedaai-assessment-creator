@@ -14,53 +14,58 @@ export function AIBanner({
   onDownload 
 }: AIBannerProps) {
   return (
-    <div className="ai-banner hide-on-print">
-      <p className="ai-message">
+    <div className="ai-response-block hide-on-print">
+      <p className="ai-response-text">
         Certainly, {userName}! Here are customized Question Paper for your {grade} {subject} classes on the NCERT chapters:
       </p>
       
-      <button className="btn btn-outline download-btn" onClick={onDownload}>
-        <Download size={16} />
+      <button className="download-pdf-btn" onClick={onDownload}>
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M7 1v8M4 6l3 3 3-3"/>
+          <path d="M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
+        </svg>
         Download as PDF
       </button>
 
       <style jsx>{`
-        .ai-banner {
-          background-color: var(--bg-banner);
+        .ai-response-block {
+          background: #2C2C2C;
+          border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+          padding: 22px 28px;
           color: white;
-          padding: 1.5rem 2rem;
-          border-radius: var(--radius-lg);
-          margin-bottom: -1rem; /* Overlaps slightly with paper below or just sits above */
-          padding-bottom: 2.5rem; /* Extra padding at bottom to look like it wraps */
-          position: relative;
-          z-index: 1;
+          margin-bottom: 0;
         }
 
-        .ai-message {
-          font-size: 1.05rem;
-          line-height: 1.5;
-          margin-bottom: 1rem;
+        .ai-response-text {
+          font-size: 14.5px;
           font-weight: 500;
+          line-height: 1.65;
+          margin-bottom: 16px;
         }
 
-        .download-btn {
-          background-color: white;
-          color: var(--bg-banner);
+        .download-pdf-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: white;
+          color: var(--text-primary);
           border: none;
+          border-radius: var(--radius-full);
+          padding: 10px 20px;
+          font-size: 13px;
           font-weight: 600;
+          transition: opacity 0.18s;
+          cursor: pointer;
+          font-family: var(--font);
         }
-        
-        .download-btn:hover {
-          background-color: var(--bg-hover);
+        .download-pdf-btn:hover {
+          opacity: 0.88;
         }
 
         @media (max-width: 768px) {
-          .ai-banner {
-            padding: 1rem 1.5rem 2rem;
-            border-radius: 0;
-            margin-left: -1rem;
-            margin-right: -1rem;
-            margin-top: -1rem;
+          .ai-response-block {
+            padding: 16px 20px;
+            border-radius: var(--radius-lg) var(--radius-lg) 0 0;
           }
         }
       `}</style>

@@ -1,167 +1,276 @@
 "use client";
 
-import { ArrowLeft, Bell, ChevronDown, Menu, LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export function TopBar() {
   const pathname = usePathname();
 
+  const getTitle = () => {
+    if (pathname.startsWith('/create')) return 'Create New';
+    if (pathname.startsWith('/assessment')) return 'Create New';
+    return 'Assignment';
+  };
+
   return (
-    <header className="topbar hide-on-print">
-      <div className="topbar-left">
-        <button className="icon-btn mobile-menu-btn">
-          <Menu size={20} />
-        </button>
-        
-        {pathname !== '/' && (
-          <Link href="/" className="icon-btn back-btn" style={{ marginRight: '-8px' }}>
-            <ArrowLeft size={16} strokeWidth={1.5} />
-          </Link>
-        )}
-        
-        <div className="breadcrumb">
-          <div className="breadcrumb-icon">
-            <LayoutGrid size={16} strokeWidth={1.5} />
+    <>
+      {/* Mobile Top Bar */}
+      <header className="mob-topbar hide-on-print">
+        <div className="mob-logo">
+          <div className="mob-logo-icon">
+            <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
+              <path d="M4 15 L10 4 L16 15" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M7 11 L13 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+            </svg>
           </div>
-          <span className="breadcrumb-text" style={{ fontSize: '0.85rem', color: '#71717A', fontWeight: 400 }}>Assignment</span>
+          VedaAI
         </div>
-      </div>
+        <div className="mob-actions">
+          <button className="mob-icon-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M10 2a6 6 0 016 6v3l1.5 2.5H2.5L4 11V8a6 6 0 016-6z"/>
+              <path d="M8.5 17a1.5 1.5 0 003 0"/>
+            </svg>
+            <span className="notif-dot"></span>
+          </button>
+          <div className="mob-user-avatar">J</div>
+          <button className="mob-icon-btn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="5" x2="17" y2="5"/>
+              <line x1="3" y1="10" x2="17" y2="10"/>
+              <line x1="3" y1="15" x2="17" y2="15"/>
+            </svg>
+          </button>
+        </div>
+      </header>
 
-      <div className="topbar-right">
-        <button className="icon-btn notification-btn">
-          <Bell size={18} strokeWidth={1.5} />
-          <span className="notification-dot"></span>
-        </button>
+      {/* Desktop Top Bar */}
+      <header className="topbar hide-on-print">
+        <div className="topbar-left">
+          {pathname !== '/' && (
+            <Link href="/" className="topbar-back">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10 3L5 8l5 5"/>
+              </svg>
+            </Link>
+          )}
 
-        <div className="user-menu">
-          <div className="user-avatar-small">
-            <img src="https://ui-avatars.com/api/?name=JD&background=F3F4F6&color=1A1A1A" alt="John Doe" />
+          <div className="topbar-breadcrumb">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" width="15" height="15" style={{ opacity: 0.7 }}>
+              <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1"/>
+              <rect x="9" y="1.5" width="5.5" height="5.5" rx="1"/>
+              <rect x="1.5" y="9" width="5.5" height="5.5" rx="1"/>
+              <rect x="9" y="9" width="5.5" height="5.5" rx="1"/>
+            </svg>
+            <span className="breadcrumb-text">{getTitle()}</span>
           </div>
-          <span className="user-name">John Doe</span>
-          <ChevronDown size={14} strokeWidth={1.5} className="dropdown-icon" />
         </div>
-      </div>
+
+        <div className="topbar-right">
+          <div className="notif-wrap">
+            <svg width="19" height="19" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+              <path d="M10 2a6 6 0 016 6v3l1.5 2.5H2.5L4 11V8a6 6 0 016-6z"/>
+              <path d="M8.5 17a1.5 1.5 0 003 0"/>
+            </svg>
+            <span className="notif-dot"></span>
+          </div>
+
+          <div className="user-chip">
+            <div className="user-avatar">J</div>
+            <span className="user-name">John Doe</span>
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="chevron-down">
+              <path d="M3 5l4 4 4-4"/>
+            </svg>
+          </div>
+        </div>
+      </header>
 
       <style jsx>{`
+        /* ── DESKTOP TOP BAR ── */
         .topbar {
           height: var(--topbar-h);
-          background-color: var(--bg-topbar);
-          border-radius: 12px;
-          margin: 12px 12px 0 0;
-          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+          background: var(--bg-white);
+          border-bottom: 1px solid var(--border-light);
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 0 2rem;
-          position: sticky;
-          top: 12px;
-          z-index: 40;
+          padding: 0 24px;
+          flex-shrink: 0;
         }
 
         .topbar-left, .topbar-right {
           display: flex;
           align-items: center;
-          gap: 1rem;
+          gap: 10px;
         }
 
-        .icon-btn {
-          background: none;
+        .topbar-back {
+          width: 34px;
+          height: 34px;
+          border-radius: 8px;
           border: none;
-          color: var(--text-secondary);
+          background: transparent;
           display: flex;
           align-items: center;
           justify-content: center;
+          color: var(--text-secondary);
+          transition: background 0.14s;
+          text-decoration: none;
+        }
+        .topbar-back:hover {
+          background: var(--bg-hover);
+        }
+
+        .topbar-breadcrumb {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          font-size: 14px;
+          color: var(--text-secondary);
+        }
+
+        .breadcrumb-text {
+          font-size: 14px;
+          color: var(--text-secondary);
+          font-weight: 400;
+        }
+
+        .notif-wrap {
+          position: relative;
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          cursor: pointer;
-          transition: background-color 0.2s;
-        }
-
-        .icon-btn:hover {
-          background-color: var(--bg-hover);
-          color: var(--text-primary);
-        }
-
-        .mobile-menu-btn {
-          display: none;
-        }
-
-        .breadcrumb {
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          color: var(--text-secondary);
-          font-weight: 500;
-          font-size: 0.95rem;
-        }
-
-        .breadcrumb-icon {
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--text-muted);
+          cursor: pointer;
+          transition: background 0.14s;
+          color: var(--text-primary);
+        }
+        .notif-wrap:hover {
+          background: var(--bg-hover);
         }
 
-        .notification-btn {
-          position: relative;
-        }
-
-        .notification-dot {
+        .notif-dot {
           position: absolute;
-          top: 8px;
-          right: 10px;
-          width: 6px;
-          height: 6px;
-          background-color: var(--brand-accent);
+          top: 7px;
+          right: 7px;
+          width: 8px;
+          height: 8px;
+          background: var(--orange);
           border-radius: 50%;
-          border: 1px solid var(--bg-white);
+          border: 1.5px solid white;
         }
 
-        .user-menu {
+        .user-chip {
           display: flex;
           align-items: center;
-          gap: 0.5rem;
+          gap: 8px;
+          padding: 4px 10px 4px 5px;
+          border-radius: var(--radius-full);
           cursor: pointer;
-          padding: 0.25rem 0.5rem;
-          border-radius: var(--radius-md);
-          transition: background-color 0.2s;
+          transition: background 0.14s;
+        }
+        .user-chip:hover {
+          background: var(--bg-hover);
         }
 
-        .user-menu:hover {
-          background-color: #F8F8FA;
-        }
-
-        .user-avatar-small img {
-          width: 24px;
-          height: 24px;
+        .user-avatar {
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          object-fit: cover;
+          background: linear-gradient(135deg, #f093fb, #f5576c);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 13px;
+          font-weight: 700;
         }
 
         .user-name {
-          font-weight: 500;
-          font-size: 0.85rem;
+          font-size: 14px;
+          font-weight: 600;
           color: var(--text-primary);
         }
 
-        .dropdown-icon {
-          color: var(--text-muted);
+        .chevron-down {
+          color: var(--text-secondary);
+        }
+
+        /* ── MOBILE TOP BAR ── */
+        .mob-topbar {
+          display: none;
+          height: 56px;
+          background: white;
+          border-bottom: 1px solid var(--border-light);
+          align-items: center;
+          justify-content: space-between;
+          padding: 0 16px;
+          flex-shrink: 0;
+        }
+
+        .mob-logo {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 16px;
+          font-weight: 800;
+        }
+
+        .mob-logo-icon {
+          width: 28px;
+          height: 28px;
+          border-radius: 6px;
+          background: linear-gradient(145deg, #E84E1B 0%, #F97316 55%, #FBAE5C 100%);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          flex-shrink: 0;
+        }
+
+        .mob-actions {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+
+        .mob-icon-btn {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          background: transparent;
+          cursor: pointer;
+          position: relative;
+          color: var(--text-primary);
+        }
+
+        .mob-user-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #f093fb, #f5576c);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: white;
+          font-size: 13px;
+          font-weight: 700;
         }
 
         @media (max-width: 768px) {
           .topbar {
-            padding: 0 1rem;
-          }
-          .mobile-menu-btn {
-            display: flex;
-          }
-          .user-name, .dropdown-icon {
             display: none;
+          }
+          .mob-topbar {
+            display: flex;
           }
         }
       `}</style>
-    </header>
+    </>
   );
 }

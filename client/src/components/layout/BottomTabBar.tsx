@@ -2,136 +2,135 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LayoutGrid, FileText, Clock, Box, Plus } from "lucide-react";
 
 export function BottomTabBar() {
   const pathname = usePathname();
 
   const tabs = [
-    { href: "/", label: "Home", icon: LayoutGrid },
-    { href: "/", label: "Assignments", icon: FileText, isActive: pathname === "/" || pathname === "/create" || pathname.startsWith("/assessment") },
-    { href: "#", label: "Library", icon: Clock },
-    { href: "#", label: "AI Toolkit", icon: Box },
+    { href: "/", label: "Home", isActive: false },
+    { href: "/", label: "Assignments", isActive: pathname === "/" || pathname === "/create" || pathname.startsWith("/assessment") },
+    { href: "#", label: "Library", isActive: false },
+    { href: "#", label: "AI Toolkit", isActive: false },
   ];
+
+  const tabIcons: Record<string, React.ReactNode> = {
+    Home: (
+      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+        <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/>
+        <rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/>
+      </svg>
+    ),
+    Assignments: (
+      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="22" height="22">
+        <rect x="4" y="2" width="14" height="18" rx="2"/>
+        <path d="M8 8h6M8 12h6M8 16h4"/>
+      </svg>
+    ),
+    Library: (
+      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="22" height="22">
+        <rect x="3" y="3" width="7" height="16" rx="1.5"/><rect x="12" y="3" width="7" height="16" rx="1.5"/>
+      </svg>
+    ),
+    "AI Toolkit": (
+      <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" width="22" height="22">
+        <rect x="2" y="4" width="18" height="12" rx="2"/>
+        <path d="M8 19h6M11 16v3"/><path d="M7 9l4 3 4-3"/>
+      </svg>
+    ),
+  };
 
   return (
     <>
       {/* Floating Action Button for Mobile */}
-      <div className="fab-container hide-on-print">
+      <div className="mob-fab-wrap hide-on-print">
         <Link href="/create">
-          <button className="fab-btn shadow-lg">
-            <Plus size={24} color="white" />
-          </button>
+          <button className="mob-fab">+</button>
         </Link>
       </div>
 
-      <nav className="bottom-tab-bar hide-on-print">
+      {/* Mobile Bottom Navigation */}
+      <nav className="mob-bottom-nav hide-on-print">
         {tabs.map((tab) => {
-          const Icon = tab.icon;
           const active = tab.isActive || pathname === tab.href;
-
           return (
-            <Link 
-              key={tab.label} 
+            <Link
+              key={tab.label}
               href={tab.href}
-              className={`tab-item ${active ? "active" : ""}`}
+              className={`mob-nav-item ${active ? "active" : ""}`}
             >
-              <div className="tab-icon-wrapper">
-                <Icon size={20} className={active ? "icon-active" : "icon-inactive"} />
-              </div>
-              <span className="tab-label">{tab.label}</span>
-              {active && <div className="tab-indicator"></div>}
+              {tabIcons[tab.label]}
+              <span className="mob-nav-label">{tab.label}</span>
             </Link>
           );
         })}
       </nav>
 
       <style jsx>{`
-        .bottom-tab-bar {
-          display: none; /* Hidden on desktop */
+        .mob-bottom-nav {
+          display: none;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: #1C1C1E;
+          height: 64px;
+          align-items: center;
+          justify-content: space-around;
+          z-index: 100;
         }
-        
-        .fab-container {
-          display: none; /* Hidden on desktop */
+
+        .mob-fab-wrap {
+          display: none;
+        }
+
+        .mob-nav-item {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 3px;
+          cursor: pointer;
+          flex: 1;
+          padding: 8px 4px;
+          color: #555;
+          border: none;
+          background: transparent;
+          text-decoration: none;
+        }
+        .mob-nav-item.active {
+          color: white;
+        }
+
+        .mob-nav-label {
+          font-size: 10px;
+          font-weight: 500;
+        }
+
+        .mob-fab {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          background: white;
+          box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border: none;
+          font-size: 24px;
+          cursor: pointer;
+          color: var(--text-primary);
+          font-weight: 300;
         }
 
         @media (max-width: 768px) {
-          .bottom-tab-bar {
+          .mob-bottom-nav {
             display: flex;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 70px;
-            background-color: var(--brand-dark);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
-            justify-content: space-around;
-            align-items: center;
-            z-index: 50;
-            padding-bottom: env(safe-area-inset-bottom);
           }
-
-          .tab-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            width: 25%;
-            height: 100%;
-            position: relative;
-            color: var(--text-muted);
-            text-decoration: none;
-          }
-
-          .tab-item.active {
-            color: white;
-          }
-
-          .icon-inactive {
-            color: #6B6B7B;
-          }
-
-          .icon-active {
-            color: white;
-          }
-
-          .tab-label {
-            font-size: 0.65rem;
-            font-weight: 500;
-          }
-
-          .tab-indicator {
-            position: absolute;
-            top: 10px;
-            right: 25%;
-            width: 4px;
-            height: 4px;
-            background-color: white;
-            border-radius: 50%;
-            /* Alternatively, Figma shows a sparkle or dot near the icon */
-          }
-
-          .fab-container {
+          .mob-fab-wrap {
             display: block;
             position: fixed;
-            bottom: 90px; /* Above the tab bar */
-            right: 20px;
-            z-index: 45;
-          }
-
-          .fab-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background-color: var(--brand-accent);
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 14px rgba(232, 93, 58, 0.4);
-            cursor: pointer;
+            bottom: 76px;
+            right: 16px;
+            z-index: 99;
           }
         }
       `}</style>

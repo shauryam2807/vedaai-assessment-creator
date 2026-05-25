@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { DM_Sans } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { Sidebar } from "@/components/layout/Sidebar";
 import { TopBar } from "@/components/layout/TopBar";
 import { BottomTabBar } from "@/components/layout/BottomTabBar";
 
-const inter = Inter({ subsets: ["latin"] });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"] });
 
 export const metadata: Metadata = {
   title: "VedaAI Assessment Creator",
@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={dmSans.className}>
         <div className="app-layout">
           <Sidebar />
           <div className="app-main">
@@ -35,9 +35,9 @@ export default function RootLayout({
             style: {
               background: '#FFFFFF',
               color: '#1A1A1A',
-              border: '1px solid #E8E8EC',
+              border: '1px solid #E5E7EB',
               boxShadow: '0 4px 16px rgba(0, 0, 0, 0.12)',
-              borderRadius: '8px'
+              borderRadius: '10px'
             }
           }}
         />
