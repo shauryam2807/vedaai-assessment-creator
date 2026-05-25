@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AssignmentForm } from "@/components/forms/AssignmentForm";
 
 interface Assignment {
   id: number;
@@ -19,9 +20,12 @@ const initialAssignments: Assignment[] = [
 ];
 
 export default function Dashboard() {
+
   const [currentScreen, setCurrentScreen] = useState<string>("empty");
   const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
   const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeNavItem, setActiveNavItem] = useState("home");
 
   function showScreen(name: string) {
     setCurrentScreen(name);
@@ -29,6 +33,7 @@ export default function Dashboard() {
   }
 
   function navClick(id: string) {
+    setActiveNavItem(id);
     if (id === "assignments") {
       showScreen(assignments.length === 0 ? "empty" : "assignments");
     } else if (id === "ai-toolkit") {
@@ -45,7 +50,7 @@ export default function Dashboard() {
 
   function viewAssignment(id: number) {
     setOpenMenuId(null);
-    showScreen("ai");
+    showScreen('ai');
   }
 
   function deleteAssignment(id: number) {
@@ -59,8 +64,23 @@ export default function Dashboard() {
     setOpenMenuId(null);
   }
 
-  const topbarTitle = currentScreen === "ai" ? "Create New" : "Assignment";
-  const activeNav = currentScreen === "ai" ? "" : "assignments";
+  const topbarTitles: Record<string, string> = {
+    home: "Home",
+    groups: "My Groups",
+    assignments: "Assignment",
+    "ai-toolkit": "AI Teacher's Toolkit",
+    library: "My Library",
+  };
+  const topbarTitle = currentScreen === "create" ? "Create New" : currentScreen === "ai" ? "Create New" : (topbarTitles[activeNavItem] || "Home");
+  const activeNav = activeNavItem;
+
+  const filteredAssignments = assignments.filter(a =>
+    a.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  function handleDownloadPDF() {
+    window.print();
+  }
 
   return (
     <>
@@ -71,10 +91,18 @@ export default function Dashboard() {
         /* ─── SIDEBAR ────────────────────────────────────── */
         .sidebar {
           width: var(--sidebar-w); min-width: var(--sidebar-w);
-          background: var(--bg-white); height: 100vh;
+          background: var(--bg-white); height: calc(100vh - 24px);
           display: flex; flex-direction: column;
           padding: 20px 14px 18px;
-          border-right: 1px solid var(--border); flex-shrink: 0;
+          border-right: none; flex-shrink: 0;
+          border-radius: 16px;
+          margin: 12px 0 12px 12px;
+          box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+          animation: sidebarFloat 4s ease-in-out infinite;
+        }
+        @keyframes sidebarFloat {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-4px); }
         }
         .sidebar-logo { display: flex; align-items: center; gap: 9px; padding: 6px 8px; margin-bottom: 22px; }
         .logo-icon {
@@ -363,14 +391,13 @@ export default function Dashboard() {
           <div className="sidebar-logo">
             <div className="logo-icon">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path d="M4 15 L10 4 L16 15" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M7 11 L13 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                <path d="M4 5 L10 16 L16 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </div>
             <span className="logo-text">VedaAI</span>
           </div>
 
-          <button className="sidebar-create-btn" onClick={() => showScreen('assignments')}>
+          <button className="sidebar-create-btn" onClick={() => showScreen('create')}>
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
             </svg>
@@ -378,14 +405,14 @@ export default function Dashboard() {
           </button>
 
           <nav className="nav-list">
-            <div className="nav-item" onClick={() => navClick('home')}>
+            <div className={`nav-item${activeNav === 'home' ? ' active' : ''}`} onClick={() => navClick('home')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/>
                 <rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/>
               </svg>
               Home
             </div>
-            <div className="nav-item" onClick={() => navClick('groups')}>
+            <div className={`nav-item${activeNav === 'groups' ? ' active' : ''}`} onClick={() => navClick('groups')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
                 <circle cx="7" cy="6" r="3"/><circle cx="13" cy="7" r="2.2"/>
                 <path d="M1 15c0-3 2.7-5 6-5s6 2 6 5"/><path d="M13 10c1.8.3 4 1.4 4 4"/>
@@ -400,7 +427,7 @@ export default function Dashboard() {
               Assignments
               <span className="nav-badge">{assignments.length}</span>
             </div>
-            <div className="nav-item" onClick={() => navClick('ai-toolkit')}>
+            <div className={`nav-item${activeNav === 'ai-toolkit' ? ' active' : ''}`} onClick={() => navClick('ai-toolkit')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
                 <rect x="2" y="3" width="14" height="10" rx="2"/>
                 <path d="M6 16h6M9 13v3"/>
@@ -408,7 +435,7 @@ export default function Dashboard() {
               </svg>
               AI Teacher&apos;s Toolkit
             </div>
-            <div className="nav-item" onClick={() => navClick('library')}>
+            <div className={`nav-item${activeNav === 'library' ? ' active' : ''}`} onClick={() => navClick('library')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 2h7l3 3v11a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/>
                 <path d="M11 2v4h4M6 9h6M6 12h4"/>
@@ -443,8 +470,7 @@ export default function Dashboard() {
             <div className="mob-logo">
               <div className="logo-icon" style={{width:'28px',height:'28px',borderRadius:'6px'}}>
                 <svg width="16" height="16" viewBox="0 0 20 20" fill="none">
-                  <path d="M4 15 L10 4 L16 15" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M7 11 L13 11" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M4 5 L10 16 L16 5" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </div>
               VedaAI
@@ -468,7 +494,7 @@ export default function Dashboard() {
 
           {/* Desktop Top Bar */}
           <header className="topbar">
-            <button className="topbar-back">
+            <button className="topbar-back" onClick={() => { if (currentScreen !== 'empty') { showScreen(assignments.length > 0 ? 'assignments' : 'empty'); } }}>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10 3L5 8l5 5"/>
               </svg>
@@ -524,7 +550,7 @@ export default function Dashboard() {
               </svg>
               <p className="empty-title">No assignments yet</p>
               <p className="empty-sub">Create your first assignment to start collecting and grading student submissions. You can set up rubrics, define marking criteria, and let AI assist with grading.</p>
-              <button className="create-first-btn" onClick={() => showScreen('assignments')}>
+              <button className="create-first-btn" onClick={() => showScreen('create')}>
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
                 </svg>
@@ -552,11 +578,11 @@ export default function Dashboard() {
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#9CA3AF" strokeWidth="2" strokeLinecap="round">
                     <circle cx="6" cy="6" r="4"/><line x1="10" y1="10" x2="13" y2="13"/>
                   </svg>
-                  <input type="text" placeholder="Search Assignment"/>
+                  <input type="text" placeholder="Search Assignment" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
                 </div>
               </div>
               <div className="cards-grid">
-                {assignments.map((a) => (
+                {filteredAssignments.map((a) => (
                   <div className="asgn-card" key={a.id}>
                     <div className="card-top">
                       <span className="card-title">{a.title}</span>
@@ -589,7 +615,7 @@ export default function Dashboard() {
             <div className={`screen${currentScreen === 'ai' ? ' active' : ''}`}>
               <div className="ai-response-block">
                 <p className="ai-response-text">Certainly, Lakshya! Here are customized Question Paper for your CBSE Grade 8 Science classes on the NCERT chapters:</p>
-                <button className="download-pdf-btn">
+                <button className="download-pdf-btn" onClick={handleDownloadPDF}>
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M7 1v8M4 6l3 3 3-3"/><path d="M2 10v2a1 1 0 001 1h8a1 1 0 001-1v-2"/>
                   </svg>
@@ -627,11 +653,25 @@ export default function Dashboard() {
               </div>
             </div>
 
+            {/* Screen: Create Assignment */}
+            <div className={`screen${currentScreen === 'create' ? ' active' : ''}`}>
+              <div className="list-page-header">
+                <div className="page-title-row">
+                  <span className="status-dot"></span>
+                  <h1 className="page-title">Create Assignment</h1>
+                </div>
+                <p className="page-sub">Set up a new assignment for your students</p>
+              </div>
+              <div style={{maxWidth:'800px'}}>
+                <AssignmentForm />
+              </div>
+            </div>
+
           </div>{/* /page-content */}
 
           {/* Floating create assignment button */}
           {currentScreen === 'assignments' && (
-            <button className="floating-btn" onClick={() => alert('Create Assignment modal')}>
+            <button className="floating-btn" onClick={() => showScreen('create')}>
               <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                 <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
               </svg>
@@ -644,7 +684,7 @@ export default function Dashboard() {
 
       {/* Mobile Bottom Nav */}
       <nav className="mob-bottom-nav">
-        <button className="mob-nav-item" onClick={() => navClick('home')}>
+        <button className={`mob-nav-item${activeNav === 'home' ? ' active' : ''}`} onClick={() => navClick('home')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/>
             <rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/>
@@ -658,13 +698,13 @@ export default function Dashboard() {
           </svg>
           <span className="mob-nav-label">Assignments</span>
         </button>
-        <button className="mob-nav-item" onClick={() => navClick('library')}>
+        <button className={`mob-nav-item${activeNav === 'library' ? ' active' : ''}`} onClick={() => navClick('library')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <rect x="3" y="3" width="7" height="16" rx="1.5"/><rect x="12" y="3" width="7" height="16" rx="1.5"/>
           </svg>
           <span className="mob-nav-label">Library</span>
         </button>
-        <button className="mob-nav-item" onClick={() => navClick('ai-toolkit')}>
+        <button className={`mob-nav-item${activeNav === 'ai-toolkit' ? ' active' : ''}`} onClick={() => navClick('ai-toolkit')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <rect x="2" y="4" width="18" height="12" rx="2"/>
             <path d="M8 19h6M11 16v3"/><path d="M7 9l4 3 4-3"/>
@@ -674,7 +714,7 @@ export default function Dashboard() {
       </nav>
 
       {/* Mobile FAB */}
-      <button className="mob-fab" onClick={() => alert('Create Assignment')}>+</button>
+      <button className="mob-fab" onClick={() => showScreen('create')}>+</button>
     </>
   );
 }
