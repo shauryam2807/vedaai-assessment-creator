@@ -1,6 +1,67 @@
 "use client";
 
+import { useState } from "react";
+
+interface Assignment {
+  id: number;
+  title: string;
+  assigned: string;
+  due: string;
+}
+
+const initialAssignments: Assignment[] = [
+  { id:1, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+  { id:2, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+  { id:3, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+  { id:4, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+  { id:5, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+  { id:6, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
+];
+
 export default function Dashboard() {
+  const [currentScreen, setCurrentScreen] = useState<string>("empty");
+  const [assignments, setAssignments] = useState<Assignment[]>(initialAssignments);
+  const [openMenuId, setOpenMenuId] = useState<number | null>(null);
+
+  function showScreen(name: string) {
+    setCurrentScreen(name);
+    setOpenMenuId(null);
+  }
+
+  function navClick(id: string) {
+    if (id === "assignments") {
+      showScreen(assignments.length === 0 ? "empty" : "assignments");
+    } else if (id === "ai-toolkit") {
+      showScreen("ai");
+    } else {
+      showScreen("empty");
+    }
+  }
+
+  function toggleMenu(e: React.MouseEvent, id: number) {
+    e.stopPropagation();
+    setOpenMenuId(openMenuId === id ? null : id);
+  }
+
+  function viewAssignment(id: number) {
+    setOpenMenuId(null);
+    showScreen("ai");
+  }
+
+  function deleteAssignment(id: number) {
+    setOpenMenuId(null);
+    const next = assignments.filter(a => a.id !== id);
+    setAssignments(next);
+    if (next.length === 0) showScreen("empty");
+  }
+
+  function closeMenus() {
+    setOpenMenuId(null);
+  }
+
+  const topbarTitle = currentScreen === "ai" ? "Create New" : "Assignment";
+  const activeNav = currentScreen === "ai" ? "" : "assignments";
+
   return (
     <>
       <style>{`
@@ -116,8 +177,8 @@ export default function Dashboard() {
         /* ─── SCREENS ────────────────────────────────────── */
         .screen { display: none; animation: screenIn 0.18s ease; }
         .screen.active { display: block; }
-        #screen-empty { display: none; height: 100%; align-items: center; justify-content: center; flex-direction: column; text-align: center; gap: 10px; }
-        #screen-empty.active { display: flex; }
+        .screen-empty { display: none; height: 100%; align-items: center; justify-content: center; flex-direction: column; text-align: center; gap: 10px; }
+        .screen-empty.active { display: flex; }
 
         @keyframes screenIn {
           from { opacity: 0; transform: translateY(6px); }
@@ -211,7 +272,6 @@ export default function Dashboard() {
         .floating-btn:hover { opacity: 0.88; transform: translateX(-50%) translateY(-2px); }
 
         /* ─── AI / QUESTION PAPER ────────────────────────── */
-        #screen-ai.active { display: block; }
         .ai-response-block {
           background: var(--bg-ai-header); border-radius: var(--radius-lg) var(--radius-lg) 0 0;
           padding: 22px 28px; color: white; margin-bottom: 0;
@@ -290,22 +350,13 @@ export default function Dashboard() {
           .filter-row { flex-wrap: wrap; }
           .floating-btn { display: none; }
           .question-paper { padding: 24px 20px; }
-          #screen-empty { padding: 20px 20px 80px; }
-        }
-
-        /* ─── MOBILE PAGE HEADER ─────────────────────────── */
-        .mob-page-header {
-          display: none; align-items: center; gap: 10px;
-          padding: 12px 16px 8px; background: white; border-bottom: 1px solid var(--border);
-        }
-        @media (max-width: 768px) {
-          .mob-page-header.visible { display: flex; }
-          .mob-ph-back { border: none; background: transparent; cursor: pointer; padding: 4px; }
-          .mob-ph-title { font-size: 16px; font-weight: 700; flex: 1; text-align: center; }
+          .screen-empty { padding: 20px 20px 80px; }
         }
       `}</style>
 
-      <div className="app">
+      {/* Click anywhere to close menus */}
+      {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+      <div className="app" onClick={closeMenus}>
 
         {/* ══════════════ SIDEBAR ══════════════ */}
         <aside className="sidebar">
@@ -319,7 +370,7 @@ export default function Dashboard() {
             <span className="logo-text">VedaAI</span>
           </div>
 
-          <button className="sidebar-create-btn" onClick={() => (window as any).showScreen('assignments')}>
+          <button className="sidebar-create-btn" onClick={() => showScreen('assignments')}>
             <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
               <line x1="8" y1="2" x2="8" y2="14"/><line x1="2" y1="8" x2="14" y2="8"/>
             </svg>
@@ -327,29 +378,29 @@ export default function Dashboard() {
           </button>
 
           <nav className="nav-list">
-            <div className="nav-item" onClick={() => (window as any).navClick('home')}>
+            <div className="nav-item" onClick={() => navClick('home')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="2" y="2" width="6" height="6" rx="1.5"/><rect x="10" y="2" width="6" height="6" rx="1.5"/>
                 <rect x="2" y="10" width="6" height="6" rx="1.5"/><rect x="10" y="10" width="6" height="6" rx="1.5"/>
               </svg>
               Home
             </div>
-            <div className="nav-item" onClick={() => (window as any).navClick('groups')}>
+            <div className="nav-item" onClick={() => navClick('groups')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
                 <circle cx="7" cy="6" r="3"/><circle cx="13" cy="7" r="2.2"/>
                 <path d="M1 15c0-3 2.7-5 6-5s6 2 6 5"/><path d="M13 10c1.8.3 4 1.4 4 4"/>
               </svg>
               My Groups
             </div>
-            <div className="nav-item active" id="nav-assignments" onClick={() => (window as any).navClick('assignments')}>
+            <div className={`nav-item${activeNav === 'assignments' ? ' active' : ''}`} onClick={() => navClick('assignments')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="2" width="12" height="14" rx="2"/>
                 <path d="M6 6h6M6 9h6M6 12h4"/>
               </svg>
               Assignments
-              <span className="nav-badge" id="sidebar-badge">10</span>
+              <span className="nav-badge">{assignments.length}</span>
             </div>
-            <div className="nav-item" onClick={() => (window as any).navClick('ai-toolkit')}>
+            <div className="nav-item" onClick={() => navClick('ai-toolkit')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
                 <rect x="2" y="3" width="14" height="10" rx="2"/>
                 <path d="M6 16h6M9 13v3"/>
@@ -357,7 +408,7 @@ export default function Dashboard() {
               </svg>
               AI Teacher&apos;s Toolkit
             </div>
-            <div className="nav-item" onClick={() => (window as any).navClick('library')}>
+            <div className="nav-item" onClick={() => navClick('library')}>
               <svg viewBox="0 0 18 18" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 2h7l3 3v11a1 1 0 01-1 1H4a1 1 0 01-1-1V3a1 1 0 011-1z"/>
                 <path d="M11 2v4h4M6 9h6M6 12h4"/>
@@ -416,7 +467,7 @@ export default function Dashboard() {
           </header>
 
           {/* Desktop Top Bar */}
-          <header className="topbar" id="main-topbar">
+          <header className="topbar">
             <button className="topbar-back">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M10 3L5 8l5 5"/>
@@ -427,7 +478,7 @@ export default function Dashboard() {
                 <rect x="1.5" y="1.5" width="5.5" height="5.5" rx="1"/><rect x="9" y="1.5" width="5.5" height="5.5" rx="1"/>
                 <rect x="1.5" y="9" width="5.5" height="5.5" rx="1"/><rect x="9" y="9" width="5.5" height="5.5" rx="1"/>
               </svg>
-              <span id="topbar-title">Assignment</span>
+              <span>{topbarTitle}</span>
             </div>
             <div className="topbar-actions">
               <div className="notif-wrap">
@@ -451,7 +502,7 @@ export default function Dashboard() {
           <div className="page-content">
 
             {/* Screen: Empty State */}
-            <div className="screen active" id="screen-empty">
+            <div className={`screen screen-empty${currentScreen === 'empty' ? ' active' : ''}`}>
               <svg className="empty-illus" viewBox="0 0 260 210" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <rect x="78" y="28" width="110" height="130" rx="10" fill="#E8E8F0" stroke="#D0D0E0" strokeWidth="1.5"/>
                 <rect x="85" y="42" width="60" height="7" rx="3.5" fill="#C8C8D8"/>
@@ -473,7 +524,7 @@ export default function Dashboard() {
               </svg>
               <p className="empty-title">No assignments yet</p>
               <p className="empty-sub">Create your first assignment to start collecting and grading student submissions. You can set up rubrics, define marking criteria, and let AI assist with grading.</p>
-              <button className="create-first-btn" onClick={() => (window as any).showScreen('assignments')}>
+              <button className="create-first-btn" onClick={() => showScreen('assignments')}>
                 <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
                   <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
                 </svg>
@@ -482,7 +533,7 @@ export default function Dashboard() {
             </div>
 
             {/* Screen: Assignments List */}
-            <div className="screen" id="screen-assignments">
+            <div className={`screen${currentScreen === 'assignments' ? ' active' : ''}`}>
               <div className="list-page-header">
                 <div className="page-title-row">
                   <span className="status-dot"></span>
@@ -504,11 +555,38 @@ export default function Dashboard() {
                   <input type="text" placeholder="Search Assignment"/>
                 </div>
               </div>
-              <div className="cards-grid" id="cards-grid"></div>
+              <div className="cards-grid">
+                {assignments.map((a) => (
+                  <div className="asgn-card" key={a.id}>
+                    <div className="card-top">
+                      <span className="card-title">{a.title}</span>
+                      <button className="card-three-dot" onClick={(e) => toggleMenu(e, a.id)}>
+                        <svg width="4" height="16" viewBox="0 0 4 16" fill="currentColor">
+                          <circle cx="2" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/>
+                        </svg>
+                      </button>
+                      <div className={`ctx-menu${openMenuId === a.id ? ' open' : ''}`}>
+                        <button className="ctx-item" onClick={() => viewAssignment(a.id)}>View Assignment</button>
+                        <button className="ctx-item danger" onClick={() => deleteAssignment(a.id)}>Delete</button>
+                      </div>
+                    </div>
+                    <div className="card-bottom">
+                      <div className="card-date">
+                        <span className="date-label">Assigned on </span>
+                        <span className="date-val">: {a.assigned}</span>
+                      </div>
+                      <div className="card-date">
+                        <span className="date-label">Due </span>
+                        <span className="date-val">: {a.due}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             {/* Screen: AI Teacher's Toolkit */}
-            <div className="screen" id="screen-ai">
+            <div className={`screen${currentScreen === 'ai' ? ' active' : ''}`}>
               <div className="ai-response-block">
                 <p className="ai-response-text">Certainly, Lakshya! Here are customized Question Paper for your CBSE Grade 8 Science classes on the NCERT chapters:</p>
                 <button className="download-pdf-btn">
@@ -552,39 +630,41 @@ export default function Dashboard() {
           </div>{/* /page-content */}
 
           {/* Floating create assignment button */}
-          <button className="floating-btn" id="floating-create-btn" style={{display:'none'}} onClick={() => alert('Create Assignment modal')}>
-            <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-              <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
-            </svg>
-            Create Assignment
-          </button>
+          {currentScreen === 'assignments' && (
+            <button className="floating-btn" onClick={() => alert('Create Assignment modal')}>
+              <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                <line x1="7.5" y1="1" x2="7.5" y2="14"/><line x1="1" y1="7.5" x2="14" y2="7.5"/>
+              </svg>
+              Create Assignment
+            </button>
+          )}
 
         </div>{/* /main-wrapper */}
       </div>{/* /app */}
 
       {/* Mobile Bottom Nav */}
-      <nav className="mob-bottom-nav" id="mob-bottom-nav">
-        <button className="mob-nav-item" onClick={() => (window as any).navClick('home')}>
+      <nav className="mob-bottom-nav">
+        <button className="mob-nav-item" onClick={() => navClick('home')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="12" y="3" width="7" height="7" rx="1.5"/>
             <rect x="3" y="12" width="7" height="7" rx="1.5"/><rect x="12" y="12" width="7" height="7" rx="1.5"/>
           </svg>
           <span className="mob-nav-label">Home</span>
         </button>
-        <button className="mob-nav-item active" id="mob-nav-assignments" onClick={() => (window as any).navClick('assignments')}>
+        <button className={`mob-nav-item${activeNav === 'assignments' ? ' active' : ''}`} onClick={() => navClick('assignments')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <rect x="4" y="2" width="14" height="18" rx="2"/>
             <path d="M8 8h6M8 12h6M8 16h4"/>
           </svg>
           <span className="mob-nav-label">Assignments</span>
         </button>
-        <button className="mob-nav-item" onClick={() => (window as any).navClick('library')}>
+        <button className="mob-nav-item" onClick={() => navClick('library')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <rect x="3" y="3" width="7" height="16" rx="1.5"/><rect x="12" y="3" width="7" height="16" rx="1.5"/>
           </svg>
           <span className="mob-nav-label">Library</span>
         </button>
-        <button className="mob-nav-item" onClick={() => (window as any).navClick('ai-toolkit')}>
+        <button className="mob-nav-item" onClick={() => navClick('ai-toolkit')}>
           <svg viewBox="0 0 22 22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <rect x="2" y="4" width="18" height="12" rx="2"/>
             <path d="M8 19h6M11 16v3"/><path d="M7 9l4 3 4-3"/>
@@ -595,124 +675,6 @@ export default function Dashboard() {
 
       {/* Mobile FAB */}
       <button className="mob-fab" onClick={() => alert('Create Assignment')}>+</button>
-
-      {/* ── JavaScript (exact same logic from original HTML) ── */}
-      <script dangerouslySetInnerHTML={{ __html: `
-        var assignments = [
-          { id:1, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-          { id:2, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-          { id:3, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-          { id:4, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-          { id:5, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-          { id:6, title:"Quiz on Electricity", assigned:"20-06-2025", due:"21-06-2025" },
-        ];
-
-        var currentScreen = 'empty';
-        var openMenu = null;
-
-        function renderCards() {
-          var grid = document.getElementById('cards-grid');
-          if (!grid) return;
-          grid.innerHTML = assignments.map(function(a) { return (
-            '<div class="asgn-card" id="card-' + a.id + '">' +
-              '<div class="card-top">' +
-                '<span class="card-title">' + a.title + '</span>' +
-                '<button class="card-three-dot" onclick="toggleMenu(event,' + a.id + ')">' +
-                  '<svg width="4" height="16" viewBox="0 0 4 16" fill="currentColor">' +
-                    '<circle cx="2" cy="2" r="1.5"/><circle cx="2" cy="8" r="1.5"/><circle cx="2" cy="14" r="1.5"/>' +
-                  '</svg>' +
-                '</button>' +
-                '<div class="ctx-menu" id="menu-' + a.id + '">' +
-                  '<button class="ctx-item" onclick="viewAssignment(' + a.id + ')">View Assignment</button>' +
-                  '<button class="ctx-item danger" onclick="deleteAssignment(' + a.id + ')">Delete</button>' +
-                '</div>' +
-              '</div>' +
-              '<div class="card-bottom">' +
-                '<div class="card-date"><span class="date-label">Assigned on </span><span class="date-val">: ' + a.assigned + '</span></div>' +
-                '<div class="card-date"><span class="date-label">Due </span><span class="date-val">: ' + a.due + '</span></div>' +
-              '</div>' +
-            '</div>'
-          ); }).join('');
-        }
-
-        function toggleMenu(e, id) {
-          e.stopPropagation();
-          var menu = document.getElementById('menu-' + id);
-          if (openMenu && openMenu !== menu) openMenu.classList.remove('open');
-          menu.classList.toggle('open');
-          openMenu = menu.classList.contains('open') ? menu : null;
-        }
-
-        function viewAssignment(id) { closeMenus(); showScreen('ai'); }
-
-        function deleteAssignment(id) {
-          closeMenus();
-          var idx = assignments.findIndex(function(a) { return a.id === id; });
-          if (idx > -1) assignments.splice(idx, 1);
-          renderCards();
-          updateBadge();
-          if (assignments.length === 0) showScreen('empty');
-        }
-
-        function closeMenus() {
-          document.querySelectorAll('.ctx-menu.open').forEach(function(m) { m.classList.remove('open'); });
-          openMenu = null;
-        }
-
-        document.addEventListener('click', closeMenus);
-
-        function updateBadge() {
-          var badge = document.getElementById('sidebar-badge');
-          if (badge) badge.textContent = assignments.length;
-        }
-
-        function navClick(id) {
-          document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-          if (id === 'assignments') {
-            var nav = document.getElementById('nav-assignments');
-            if (nav) nav.classList.add('active');
-            showScreen(assignments.length === 0 ? 'empty' : 'assignments');
-          } else if (id === 'ai-toolkit') {
-            showScreen('ai');
-          } else {
-            showScreen('empty');
-          }
-          document.querySelectorAll('.mob-nav-item').forEach(function(n) { n.classList.remove('active'); });
-          var mobNav = document.getElementById('mob-nav-assignments');
-          if (id === 'assignments' && mobNav) mobNav.classList.add('active');
-        }
-
-        function showScreen(name) {
-          currentScreen = name;
-          document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
-          var targetId = name === 'assignments' ? 'screen-assignments' : name === 'ai' ? 'screen-ai' : 'screen-empty';
-          var target = document.getElementById(targetId);
-          if (target) target.classList.add('active');
-
-          var titles = { empty:'Assignment', assignments:'Assignment', ai:'Create New' };
-          var topbarEl = document.getElementById('topbar-title');
-          if (topbarEl) topbarEl.textContent = titles[name] || 'Assignment';
-
-          var fb = document.getElementById('floating-create-btn');
-          if (fb) fb.style.display = name === 'assignments' ? 'flex' : 'none';
-
-          document.querySelectorAll('.nav-item').forEach(function(n) { n.classList.remove('active'); });
-          if (name === 'assignments' || name === 'empty') {
-            var nav = document.getElementById('nav-assignments');
-            if (nav) nav.classList.add('active');
-          }
-        }
-
-        window.navClick = navClick;
-        window.showScreen = showScreen;
-        window.toggleMenu = toggleMenu;
-        window.viewAssignment = viewAssignment;
-        window.deleteAssignment = deleteAssignment;
-
-        renderCards();
-        updateBadge();
-        showScreen('empty');
-      `}} />
     </>
   );
 }
